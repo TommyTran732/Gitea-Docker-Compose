@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+  gitea:
+    # You can use gitea/gitea:latest-rootless, but it tends to be behind gitea:latest for some reason :/
+    image: gitea/gitea:dev-rootless
+    container_name: gitea
+    restart: always
+    volumes:
+      - gitea-data:/var/lib/gitea
+      - gitea-config:/etc/gitea
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "2222:2222"
+    depends_on:
+      - mariadb
+    networks:
+      - gitea
+      - mariadb
+    restart: unless-stopped
+    read_only: true
+    user: "1000:1000"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=gitea
+      - MYSQL_USER=gitea
+      - MYSQL_PASSWORD=changeme
+      - MYSQL_DATABASE=gitea
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - mariadb
+    restart: unless-stopped
+    user: "999:999"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  swag:
+    image: ghcr.io/linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - URL=yourdomain.tld
+      - SUBDOMAINS=git
+      - VALIDATION=http
+      - EMAIL=changeme@yourdomain.tld
+      - ONLY_SUBDOMAINS=true
+    volumes:
+      - ./swag:/config:Z
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 443:443
+      - 80:80
+    networks:
+      - gitea
+    restart: unless-stopped
+
+networks:
+  gitea:
+  mariadb:
+
+volumes:
+  gitea-data:
+  gitea-config:
+  mariadb:
