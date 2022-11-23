@@ -31,7 +31,7 @@ services:
     container_name: mariadb
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=gitea
+      - MYSQL_ROOT_PASSWORD=changeme
       - MYSQL_USER=gitea
       - MYSQL_PASSWORD=changeme
       - MYSQL_DATABASE=gitea
