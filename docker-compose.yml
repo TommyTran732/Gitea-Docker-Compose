@@ -5,7 +5,7 @@ services:
     # You can use gitea/gitea:latest-rootless, but it tends to be behind gitea:latest for some reason :/
     image: gitea/gitea:dev-rootless
     container_name: gitea
-    restart: always
+    restart: unless-stopped
     volumes:
       - gitea-data:/var/lib/gitea
       - gitea-config:/etc/gitea
@@ -18,7 +18,6 @@ services:
     networks:
       - gitea
       - mariadb
-    restart: unless-stopped
     read_only: true
     user: "1000:1000"
     security_opt:
@@ -29,7 +28,7 @@ services:
   mariadb:
     image: mariadb:latest
     container_name: mariadb
-    restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=changeme
       - MYSQL_USER=gitea
@@ -39,7 +38,6 @@ services:
       - mariadb:/var/lib/mysql
     networks:
       - mariadb
-    restart: unless-stopped
     user: "999:999"
     security_opt:
       - no-new-privileges:true
@@ -49,6 +47,7 @@ services:
   swag:
     image: ghcr.io/linuxserver/swag
     container_name: swag
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
     environment:
