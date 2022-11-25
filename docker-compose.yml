@@ -67,7 +67,8 @@ services:
       - 80:80
     networks:
       - gitea
-    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
 networks:
   gitea:
