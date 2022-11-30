@@ -48,8 +48,6 @@ services:
     image: ghcr.io/linuxserver/swag
     container_name: swag
     restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
     environment:
       - PUID=1000
       - PGID=1000
@@ -69,6 +67,8 @@ services:
       - gitea
     security_opt:
       - no-new-privileges:true
+    cap_add:
+      - NET_ADMIN
 
 networks:
   gitea:
