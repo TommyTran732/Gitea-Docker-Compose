@@ -3,7 +3,7 @@ version: "3"
 services:
   gitea:
     # You can use gitea/gitea:latest-rootless, but it tends to be behind gitea:latest for some reason :/
-    image: gitea/gitea:dev-rootless
+    image: gitea/gitea:latest-rootless
     container_name: gitea
     restart: unless-stopped
     volumes:
